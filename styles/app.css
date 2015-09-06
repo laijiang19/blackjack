@@ -13,7 +13,6 @@ body {
   background: -ms-linear-gradient(top,  #0a4718 0%,#010a01 100%); /* IE10+ */
   background: linear-gradient(to bottom,  #0a4718 0%,#010a01 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0a4718', endColorstr='#010a01',GradientType=0 ); /* IE6-9 */
-  overflow-y: hidden;
 }
 
 .card {

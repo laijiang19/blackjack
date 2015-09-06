@@ -11,7 +11,11 @@ var CardView = Backbone.View.extend({
 
   render: function(){
     if (this.model.get('revealed')){
-          this.cardImg = "./img/cards/" + this.model.get('rankName') + '-' +
+      var rank = this.model.get('rankName');
+      if (isNaN(rank)){
+        rank = rank.toLowerCase();
+      }
+      this.cardImg = "./img/cards/" + rank + '-' +
         this.model.get('suitName').toLowerCase() +'.png'; 
       // this.$el.addClass('covered');
     }
