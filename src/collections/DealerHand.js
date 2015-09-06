@@ -1,23 +1,61 @@
 var DealerHand = Hand.extend({
 
-  initialize: function(){
-    this.handInitialize(); 
-    this.dealer = true;
+  initialize: function(params){
+    this.checkForBust();
+    this.newHand(); 
+  },
+
+  newHand: function(){
+    this.reset();  
+    this.busted = false;
+    this.isDealer = true;
     this.playerCount = 1;
     this.readyCount = 0;
   },
 
   listenForBust : function(player){
-    player.on('standOrBust', function(){
-      this.set('readyCount', this.get('readyCount') + 1);
-      if (this.get('readyCount') === this.get('playerCount')){
-        this.roundOver();
-        this.set('readyCount', 0);
+    player.on('standOrBust', function(player, busted){
+      this.readyCount++;
+      if (this.readyCount === this.playerCount){
+        this.readyCount = 0;
+        if(!busted){
+          this.reveal();
+          setTimeout(this.drawMore.bind(this),1000); 
+        }
+        else{
+          this.trigger('roundOver',false);
+        }
       }
-    });
+    }, this);
   },
 
-  roundOver: function(){
-    this.trigger('roundOver');
-  }
+  reveal: function(){
+    this.each(function(element){
+      element.set('revealed',true); 
+    }); 
+    //trigger in 2 seconds
+  },
+
+  drawMore: function(){
+    if(this.handValue() < 17){
+      this.hit(); 
+      setTimeout(this.drawMore.bind(this),1000); 
+    }
+    else{
+      var cb = function(){
+        this.trigger('roundOver');
+      };
+      setTimeout(cb.bind(this), 1300);
+    }
+  }, 
+  
+  checkForBust: function(){
+    this.on('add', function(){
+      if(this.handValue() > 21) {
+        console.log("I busted"); 
+        this.busted = true; 
+        this.trigger('standOrBust', this, true);
+      }
+    }, this);
+  },
 });
